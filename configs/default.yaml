@@ -1,0 +1,44 @@
+# Default configuration for blind diffusion restoration.
+# Override any of these via CLI flags to train.py / evaluate.py.
+
+data:
+  train_dir: /kaggle/input/div2k/DIV2K_train_HR
+  val_dir:   /kaggle/input/div2k/DIV2K_valid_HR
+  patch_size: 128
+
+degradation:
+  blur_prob: 0.7
+  blur_sigma_range: [0.5, 3.0]
+  noise_prob: 0.8
+  noise_sigma_range: [5.0, 50.0]      # on a 0-255 scale
+  jpeg_prob: 0.8
+  jpeg_quality_range: [10, 60]
+  force_at_least_one: true
+  random_order: true
+
+diffusion:
+  timesteps: 1000
+  schedule: cosine                    # cosine | linear
+  beta_start: 0.0001
+  beta_end: 0.02
+
+model:
+  from_scratch: true                  # set false + pretrained_id to fine-tune
+  pretrained_id: ""                   # e.g. google/ddpm-celebahq-256
+
+train:
+  batch: 8
+  accum: 1
+  steps: 20000
+  lr: 0.0002
+  ema_decay: 0.999
+  workers: 2
+  ckpt_every: 2000
+  sample_every: 2000
+
+eval:
+  limit: 50
+  size: 256
+  ddim_steps: 50
+  use_lpips: true
+  baselines: [identity, nlm, wiener, classical_blind]
